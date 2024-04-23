@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat</h1>
+    <div id="messages">
+        {% for message in messages %}
+            <p>{{ message.sender.username }}: {{ message.content }}</p>
+        {% endfor %}
+    </div>
+	<form id="message-form" method="post" action="{% url 'send_message' receiver_id=receiver_id %}">
+		{% csrf_token %}
+		<input type="text" name="content">
+		<input type="hidden" name="receiver_id" value="{{ receiver_id }}">
+		<button type="submit">Send</button>
+	</form>
+	
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function fetchMessages() {
+            $.get('/fetch-messages/', function(data) {
+                $('#messages').html(data);
+            });
+        }
+        
+        setInterval(fetchMessages, 5000); // Poll every 5 seconds
+    });
+</script>
