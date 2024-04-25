@@ -10,11 +10,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myChat.settings')
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": AuthMiddlewareStack(  # Handle websocket connections with authentication
+        "websocket": AuthMiddlewareStack(
         URLRouter([
             path("ws/chat/<int:receiver_id>/", ChatConsumer.as_asgi()),
         ])
         ),
-        # Just HTTP for now. (We can add other protocols later.)
     }
 )
