@@ -34,12 +34,15 @@ INSTALLED_APPS = [
     'daphne',
     'chat',
     'rest_framework',
+    'djoser',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
+    'userman',
 ]
 
 MIDDLEWARE = [
@@ -54,13 +57,23 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'myChat.urls'
 ASGI_APPLICATION = 'myChat.asgi.application'
+AUTH_USER_MODEL = 'userman.Player'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
+    
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+   'USER_ID_FIELD': 'email',
 }
 
 CHANNEL_LAYERS = {
@@ -94,7 +107,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db1.sqlite3',
     }
 }
 
