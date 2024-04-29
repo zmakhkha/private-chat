@@ -57,7 +57,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'myChat.urls'
 ASGI_APPLICATION = 'myChat.asgi.application'
-AUTH_USER_MODEL = 'userman.Player'
+
+#AUTH_USER_MODEL = 'userman.Player'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -70,10 +71,11 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
-
+from datetime import timedelta
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
    'USER_ID_FIELD': 'email',
+   "ACCESS_TOKEN_LIFETIME": timedelta(days=1)
 }
 
 CHANNEL_LAYERS = {
@@ -107,7 +109,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db1.sqlite3',
+        'NAME': BASE_DIR / 'db2.sqlite3',
     }
 }
 
