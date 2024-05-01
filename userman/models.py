@@ -143,9 +143,9 @@ class ItemsPerUser(models.Model):
         return f"{self.user.username} - {self.item.name}"
     
 class Achievement(models.Model):
-    title = models.CharField(max_length=56)
+    title = models.CharField(max_length=56, unique = True)
+    desc = models.CharField(max_length=256)
     path = models.CharField(max_length=56)
-    xp = models.DecimalField(max_digits=10, decimal_places=2)
 
 class AchievementPerUser(models.Model):
     user = models.ForeignKey(Player, on_delete=models.CASCADE)

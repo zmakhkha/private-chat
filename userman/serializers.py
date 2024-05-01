@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import *
 
+class PlayerCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Player
+        fields = ['first_name', 'last_name', 'email','username', 'password',]
+    
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
