@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',         
     'userman',
 	'purshase',
+    
 ]
 
 MIDDLEWARE = [
@@ -59,17 +60,23 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'myChat.urls'
 ASGI_APPLICATION = 'myChat.asgi.application'
 
-#AUTH_USER_MODEL = 'userman.Player'
+AUTH_USER_MODEL = 'userman.Player'
 
 DJOSER = {
-	# 'SEND_ACTIVATION_EMAIL' : 'True',
-	# 'SEND_CONFIRMATION_EMAIL' : 'True',
-	'USER_CREATE_PASSWORD_RETYPE' : 'True',
-	# 'LOGOUT_ON_PASSWORD_CHANGE' : 'True',
+	'LOGIN_FIELD' : 'email',
+	# 'USER_CREATE_PASSWORD_RETYPE' : True,
+	'USERNAME_CHANGED_EMAIL_CONFIRMATION' : True,
+	'PASSWORD_CHANGED_EMAIL_CONFIRMATION' : True,
+	# 'SEND_CONFIRMATION_EMAIL' : True,
+	# 'SET_PASSWORD_RETYPE' : True,
+	'PASSWORD_RESET_CONFIRM_URL' : 'password/reset/confirm/{uid}/{token}',
+	'USERNAME_RESET_CONFIRM_URL' : 'email/reset/confirm/{uid}/{token}',
 	'ACTIVATION_URL' : 'activate/{uid}/{token}',
 	'SERIALIZERS': {
         'user_create': 'userman.serializers.PlayerCreateSerializer',
-    }
+    },
+	# 'SEND_ACTIVATION_EMAIL' : True,
+	# 'LOGOUT_ON_PASSWORD_CHANGE' : 'True',
 }
 
 REST_FRAMEWORK = {
@@ -115,13 +122,21 @@ TEMPLATES = [
 #WSGI_APPLICATION = 'myChat.wsgi.application'
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_USER = 'zakaria.makhkhas@gmail.com'
+EMAIL_HOST = 'BMWzakaria#307'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db2.sqlite3',
+        'NAME': BASE_DIR / 'db3.sqlite3',
     }
 }
 
