@@ -37,7 +37,7 @@ class Player(AbstractBaseUser):
         (STATUS_ONLINE, 'ONLINE'),
         (STATUS_OFFLINE, 'OFFLINE'),
     ]
-    id = models.IntegerField(unique=True, primary_key=True) 
+    # id = models.IntegerField(unique=True, primary_key=True) 
     coins = models.IntegerField(default=0)
     status = models.CharField(
         max_length=1, choices=STATUS_CHOICES, default=STATUS_OFFLINE)

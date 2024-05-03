@@ -63,20 +63,20 @@ ASGI_APPLICATION = 'myChat.asgi.application'
 AUTH_USER_MODEL = 'userman.Player'
 
 DJOSER = {
-	'LOGIN_FIELD' : 'email',
-	# 'USER_CREATE_PASSWORD_RETYPE' : True,
-	'USERNAME_CHANGED_EMAIL_CONFIRMATION' : True,
-	'PASSWORD_CHANGED_EMAIL_CONFIRMATION' : True,
-	# 'SEND_CONFIRMATION_EMAIL' : True,
-	# 'SET_PASSWORD_RETYPE' : True,
+	'ACTIVATION_URL' : 'activate/{uid}/{token}',
+	'USER_CREATE_PASSWORD_RETYPE' : True,
+	'SET_PASSWORD_RETYPE' : True,
 	'PASSWORD_RESET_CONFIRM_URL' : 'password/reset/confirm/{uid}/{token}',
 	'USERNAME_RESET_CONFIRM_URL' : 'email/reset/confirm/{uid}/{token}',
-	'ACTIVATION_URL' : 'activate/{uid}/{token}',
+	'LOGOUT_ON_PASSWORD_CHANGE' : True,
+	# 'USERNAME_CHANGED_EMAIL_CONFIRMATION' : True,
+	# 'SEND_CONFIRMATION_EMAIL' : True,
+	# 'PASSWORD_CHANGED_EMAIL_CONFIRMATION' : True,
+	# 'SEND_ACTIVATION_EMAIL' : True,
 	'SERIALIZERS': {
         'user_create': 'userman.serializers.PlayerCreateSerializer',
+        # 'user': 'userman.serializers.PlayerCreateSerializer',
     },
-	# 'SEND_ACTIVATION_EMAIL' : True,
-	# 'LOGOUT_ON_PASSWORD_CHANGE' : 'True',
 }
 
 REST_FRAMEWORK = {
@@ -93,7 +93,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
-   'USER_ID_FIELD': 'email',
+#    'USER_ID_FIELD': 'email',
    "ACCESS_TOKEN_LIFETIME": timedelta(days=1)
 }
 
@@ -122,12 +122,16 @@ TEMPLATES = [
 #WSGI_APPLICATION = 'myChat.wsgi.application'
 
 
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_USER = 'zakaria.makhkhas@gmail.com'
-EMAIL_HOST = '#'
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PASSWORD = 'srifqofwiwraujlj'
 EMAIL_PORT = 587
+EMAIL_HOST_USER = 'zakaria.makhkhas@gmail.com'
+EMAIL_USE_TLS = False  # Enable TLS encryption
+EMAIL_USE_SSL = False
+
 
 
 # Database
@@ -136,7 +140,7 @@ EMAIL_PORT = 587
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db3.sqlite3',
+        'NAME': BASE_DIR / 'db5.sqlite3',
     }
 }
 

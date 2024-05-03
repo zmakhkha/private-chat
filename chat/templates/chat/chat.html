@@ -21,7 +21,7 @@
         const receiverId = "{{ receiver_id }}";
 
         // Establish websocket connection with the dynamic receiver ID
-        const socket = new WebSocket(`ws://localhost:1600/ws/chat/${receiverId}/`);
+        const socket = new WebSocket(`ws://localhost:2500/ws/chat/${receiverId}/`);
         socket.onopen = function(event) {
             console.log("WebSocket connection established.");
             

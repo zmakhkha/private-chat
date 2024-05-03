@@ -4,7 +4,7 @@ from . import views
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
-router.register('', views.PlayerViewSet)
+router.register('players', views.PlayerViewSet)
 urlpatterns = [
     # path('', views.players_list),
     path('', include(router.urls)), 

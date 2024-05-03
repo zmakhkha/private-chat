@@ -1,10 +1,42 @@
 from rest_framework import serializers
 from .models import *
 
+from djoser.serializers import UserCreateSerializer
+from django.contrib.auth import get_user_model
+
+# User = get_user_model()
+
+from django.contrib.auth.hashers import make_password
+from rest_framework import serializers
+from .models import Player  # Import your Player model here
+
+from rest_framework import serializers
+from .models import Player  # Import your Player model here
+
 class PlayerCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    # Override the create method to exclude id field
+    def create(self, validated_data):
+        validated_data.pop('id', None)  # Exclude 'id' field if present
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
     class Meta:
         model = Player
-        fields = ['first_name', 'last_name', 'email','username', 'password']
+        fields = ['id', 'email', 'username', 'password']
+        extra_kwargs = {'password': {'write_only': True}}  # Ensure password is write-only
+
+
+
+# class PlayerCreateSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Player
+#         fields = ['email','username', 'password']
     
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:

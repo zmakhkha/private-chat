@@ -25,5 +25,4 @@ urlpatterns = [
     path('', include('purshase.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-	
 ]
