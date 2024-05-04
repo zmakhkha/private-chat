@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
-from .models import Player, FriendshipRequest
+from .models import *
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.decorators import action
 from .serializers import *
@@ -46,20 +46,26 @@ class PlayerViewSet(viewsets.ModelViewSet):
 
             # trophies_rate
             total_trophies = Achievement.objects.count()
-            earned_trophies = AchievementPerUser.objects.filter(user=player).count()
-            trophies_rate = earned_trophies / total_games if total_trophies > 0 else 0
+            earned_trophies = AchievementPerUser.objects.filter(user=player)
+            earned_trophies_count = earned_trophies.count()
+            trophies_rate = earned_trophies_count / total_games if total_trophies > 0 else 0
 
+            earned_items = ItemsPerUser.objects.filter(user=player)
             #friends_serializer = PlayerSerializer(online_friends.union(offline_friends), many=True)
             on_friends_serializer = PlayerSerializer(online_friends, many=True)
             off_friends_serializer = PlayerSerializer(offline_friends, many=True)
             games_serializer = GameHistorySerializer(played_games, many=True)
 
+            achievements_serializer = AchievementPerUserSerializer(earned_trophies, many=True)
+
             data = {
+                'avatar' : serializer.data['image'],
                 'username': serializer.data['username'],
                 'first_name': serializer.data['first_name'],
                 'last_name': serializer.data['last_name'],
                 'level': player.level,
                 'win_rate': win_rate,
+                'trophies' : achievements_serializer.data,
                 'trophies_rate': trophies_rate,
                 'friends': {
                     'online' : on_friends_serializer.data,

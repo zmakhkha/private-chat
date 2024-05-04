@@ -1,0 +1,40 @@
+search 
+	list of players usernames
+
+home
+	avatar_path
+	username
+	first_name
+	last_name
+	level (hua 1000 xp = 1lvl)
+	win_rate
+	trophies_rate {
+	online friends
+	offline friends
+	}
+	games 
+	achievement_per_user
+	item_per_user
+
+
+chat
+	dms with friends sorted by date of the msg desc
+	[avatar, username, messages]
+	invite to play a game
+
+
+shop
+	items
+	[type, avatar, title, prix]
+	post : buy[]
+
+notifications
+	firendships requests
+	game reauests 
+
+leaderboard
+	list of players sorted by xp
+
+settings
+	post : first_name last_name password
+	get : all (pasword)

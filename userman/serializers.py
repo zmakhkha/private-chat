@@ -29,7 +29,8 @@ class PlayerCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
         fields = ['id', 'email', 'username', 'password']
-        extra_kwargs = {'password': {'write_only': True}}  # Ensure password is write-only
+        extra_kwargs = {'password': {'write_only': True}
+                        }
 
 
 
@@ -41,7 +42,10 @@ class PlayerCreateSerializer(serializers.ModelSerializer):
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
-        fields = ['email', 'first_name', 'last_name', 'username', 'coins', 'level',]
+        fields = ['email', 'first_name', 'last_name', 'username', 'coins', 'level', 'image']
+        extra_kwargs = {'level': {'read_only': True},
+                        'coins': {'read_only': True},
+                        }
 
 class FriendshipRequestSerializer(serializers.ModelSerializer):
     class Meta:
@@ -67,3 +71,19 @@ class Itemserializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['type', 'name', 'price', 'path']
+
+class AchievementPerUserSerializer(serializers.ModelSerializer):
+    user_id = serializers.PrimaryKeyRelatedField(source = 'user.id', read_only=True)
+    item_title = serializers.CharField(source = 'item.title', read_only = True)
+    item_path = serializers.CharField(source = 'item.path', read_only = True)
+    class Meta:
+        model = AchievementPerUser
+        fields = ['user_id', 'item_path']
+
+class ItemsPerUserSerializer(serializers.ModelSerializer):
+    user_id = serializers.PrimaryKeyRelatedField(source = 'user.id', read_only=True)
+    item_title = serializers.CharField(source = 'item.title', read_only = True)
+    item_path = serializers.CharField(source = 'item.path', read_only = True)
+    class Meta:
+        model = ItemsPerUser
+        fields = ['user_id', 'item_path']
