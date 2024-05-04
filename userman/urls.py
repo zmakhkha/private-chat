@@ -8,4 +8,5 @@ router.register('players', views.PlayerViewSet)
 urlpatterns = [
     # path('', views.players_list),
     path('', include(router.urls)), 
+	path('search/<str:username>',views.PlayerSearchAPIView.as_view(), name='user-search'),
 ]

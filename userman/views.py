@@ -19,6 +19,27 @@ from rest_framework.decorators import action
 from .serializers import *
 from django.db.models import F
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Player
+from .serializers import PlayerSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly 
+
+class PlayerSearchAPIView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly] 
+    def get(self, request, username):
+        if username:
+            users = Player.objects.filter(username__icontains=username)
+            serialized_players = PlayerSerializer(users, many=True)
+            return Response(serialized_players.data)
+        else:
+            return Response({'message' : 'No username provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+            
 
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = Player.objects.all()

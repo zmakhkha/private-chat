@@ -1,4 +1,4 @@
-search 
+search : http://127.0.0.1:2500/search/<username>
 	list of players usernames
 
 home

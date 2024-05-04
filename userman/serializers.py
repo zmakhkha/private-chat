@@ -74,16 +74,21 @@ class Itemserializer(serializers.ModelSerializer):
 
 class AchievementPerUserSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(source = 'user.id', read_only=True)
-    item_title = serializers.CharField(source = 'item.title', read_only = True)
-    item_path = serializers.CharField(source = 'item.path', read_only = True)
+    item_title = serializers.CharField(source = 'Achievement.title', read_only = True)
+    achievement_path = serializers.CharField(source = 'Achievement.path', read_only = True)
     class Meta:
         model = AchievementPerUser
-        fields = ['user_id', 'item_path']
+        fields = ['user_id', 'achievement_path']
 
 class ItemsPerUserSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(source = 'user.id', read_only=True)
-    item_title = serializers.CharField(source = 'item.title', read_only = True)
-    item_path = serializers.CharField(source = 'item.path', read_only = True)
+    item_title = serializers.CharField(source = 'Item.title', read_only = True)
+    item_path = serializers.CharField(source = 'Item.path', read_only = True)
     class Meta:
         model = ItemsPerUser
         fields = ['user_id', 'item_path']
+
+class PlayerSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Player
+        fields = ['username']
