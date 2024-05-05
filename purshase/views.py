@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from userman.serializers import AchievementSerializer, Itemserializer
+from userman.serializers import AchievementSerializer, ItemSerializer
 from userman.models import Achievement, Item
 
 class AchievementViewSet(viewsets.ModelViewSet):
@@ -24,11 +24,11 @@ class AchievementViewSet(viewsets.ModelViewSet):
 
 class ItemViewSet(viewsets.ModelViewSet):
 	queryset = Item.objects.all()
-	serializer_class = Itemserializer
+	serializer_class = ItemSerializer
 
 	@action(detail=False, methods=['GET', 'POST', 'PUT'])
 	def all(self, request):
 		if request.method == 'GET':
 			items = Item.objects.all().order_by('price')
-			serializer = Itemserializer(items, many = True)
+			serializer = ItemSerializer(items, many = True)
 			return Response(serializer.data)

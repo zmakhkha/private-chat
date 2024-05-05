@@ -20,20 +20,19 @@ home : http://localhost:2500/players/me/
 leaderboard : http://localhost:2500/players/leaderboard/
 	list of players sorted by xp
 
+settings : http://localhost:2500/player/setting/
+
+
+shop
+	items
+	[type, avatar, title, prix] : http://localhost:2500/shop/
+	post : buy[] : "item_id": "your_item_id" in the request body
+
 chat
 	dms with friends sorted by date of the msg desc
 	[avatar, username, messages]
 	invite to play a game
 
-settings
-
-shop
-	items
-	[type, avatar, title, prix]
-	post : buy[]
-
 notifications
 	firendships requests
-	game reauests 
-
-
+	game requests 

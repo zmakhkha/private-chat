@@ -4,9 +4,10 @@ from . import views
 
 router = DefaultRouter()
 router.register('player', views.PlayerViewSet, basename = 'player')
-router.register('setting', views.SettingsViewSet, basename = 'setting')
+# router.register('shop', views.ShopViewSet, basename = 'shop')
 urlpatterns = [
     # path('', views.players_list),
     path('', include(router.urls)), 
 	path('search/<str:username>',views.PlayerSearchAPIView.as_view(), name='user-search'),
+	path('shop/',views.ShopView.as_view(), name='user-shop'),
 ]

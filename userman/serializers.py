@@ -67,10 +67,10 @@ class GameHistorySerializer(serializers.ModelSerializer):
         model = GameHistory
         fields = ['date', 'player', 'opponent', 'player_score', 'opponent_score', 'game_mode', 'game_duration_minutes']
     
-class Itemserializer(serializers.ModelSerializer):
+class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ['type', 'name', 'price', 'path']
+        fields = ['id', 'type', 'name', 'price', 'path']
 
 class AchievementPerUserSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(source = 'user.id', read_only=True)
@@ -113,3 +113,4 @@ class SettingsSerializer (serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+    

@@ -19,15 +19,23 @@ from rest_framework.decorators import action
 from .serializers import *
 from django.db.models import F
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Player
-from .serializers import PlayerSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+
+from .models import Player
+from .serializers import PlayerSerializer, ItemSerializer
+
+# PUT NOT WORKING
+# class PlayerSettingAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     def put(self, request):
+#         player = request.user
+#         serialized_player = SettingsSerializer(player, data = request.data)
+#         serialized_player.is_valid(raise_exception=True)
+#         serialized_player.save()
+#         return Response(serialized_player.data)
 
 class PlayerSearchAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly] 
@@ -39,31 +47,73 @@ class PlayerSearchAPIView(APIView):
         else:
             return Response({'message' : 'No username provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-class SettingsViewSet(ModelViewSet):
-    queryset = Player.objects.all()
-    serializer_class = SettingsSerializer
-    permission_classes = [IsAuthenticated]
+class ShopView(APIView):
+    permission_classes = [IsAuthenticated] 
+    def get(self, request):
+        player = request.user
+        items = Item.objects.all()
+        achievements = Achievement.objects.all()
 
-    def get_object(self):
-        return self.request.user
+        all_serialized_achievements = AchievementSerializer(achievements, many=True)
+        all_serialized_items = ItemSerializer(items, many=True)
 
-    def list(self, request):
-        user = self.get_object()
-        serialized_player = self.get_serializer(user)
-        return Response(serialized_player.data)
+        owned_items = ItemsPerUser.objects.filter(user=player).values_list('item__id', flat=True)
+        serialized_owned_items = ItemsPerUserSerializer(owned_items, many=True)
 
-    def update(self, request, *args, **kwargs):
-        user = self.get_object()
-        serialized_player = self.get_serializer(user, data=request.data)
-        serialized_player.is_valid(raise_exception=True)
-        self.perform_update(serialized_player)
-        return Response(serialized_player.data)
+        owned_achievements = AchievementPerUser.objects.filter(user=player).values_list('item__id', flat=True)
+        serialized_owned_achievements = AchievementPerUserSerializer(owned_items, many=True)
+
+        data = {
+            'all_achievements' : all_serialized_achievements.data,
+            'all_items' : all_serialized_items.data,
+            'owned_achievements' : serialized_owned_achievements.data,
+            'owned_items' : serialized_owned_items.data,
+        }
+        return Response(data)
     
+    def post(self, request):
+        item_id = request.data.get('item_id')
+        if not item_id:
+            return Response({'message': 'No item_id specified'}, status=status.HTTP_400_BAD_REQUEST)
+        user = request.user
+        
+        try:
+            item = Item.objects.get(id=item_id)
+        except Item.DoesNotExist:
+            return Response({'message': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if user.coins >= item.price:
+            user.coins -= item.price
+            user.save()
+
+            ItemsPerUser.objects.create(user=user, item=item)
+            return Response({'message': 'Purchase successful'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'message': 'Not enough coins'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    @action(detail=False, methods=['POST'])
+    def purchaseItem(self, request):
+        item_id = request.data.get('item_id')
+        user = request.user
+
+        try:
+            item = Item.objects.get(id=item_id)
+        except Item.DoesNotExist:
+            return Response({'message': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if user.coins >= item.price:
+            user.coins -= item.price
+            user.save()
+
+            # Create ItemsPerUser object
+            ItemsPerUser.objects.create(user=user, item=item)
+
+            return Response({'message': 'Purchase successful'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'message': 'Not enough coins'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class PlayerViewSet(viewsets.ModelViewSet):
@@ -71,8 +121,23 @@ class PlayerViewSet(viewsets.ModelViewSet):
     serializer_class = PlayerSerializer
     permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=['GET', 'PUT'])
+    def setting(self, request):
+        player = self.request.user
+        if request.method == 'GET':
+            serializer = SettingsSerializer(player)
+            return Response(serializer.data)
+        if request.method == 'PUT':
+            serialized_player = self.get_serializer(player, data=request.data)
+            serialized_player.is_valid(raise_exception=True)
+            self.perform_update(serialized_player)
+            return Response(serialized_player.data)
+
+
+
+
     @action(detail=False, methods=['GET'])
-    def leaderboard(detail=False, methods=['GET']):
+    def leaderboard(self, request):
         player = Player.objects.all().order_by('-level')
         leaderboard_serializer = LeaderBoardSerializer(player, many=True)
         return Response(leaderboard_serializer.data)
