@@ -92,3 +92,24 @@ class PlayerSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
         fields = ['username']
+
+class LeaderBoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Player
+        fields = ['username', 'first_name', 'last_name', 'image', 'level', 'coins']
+
+
+class SettingsSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Player
+        fields = ['email', 'username', 'first_name', 'last_name', 'image']
+
+        # extra_kwargs = {
+        #     'email' : {'read_only' : True},
+        #     'username' : {'read_only' : True},
+        # }
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance

@@ -1,27 +1,31 @@
-search : http://127.0.0.1:2500/search/<username>
+-search : http://127.0.0.1:2500/search/<username>
 	list of players usernames
 
-home
+home : http://localhost:2500/players/me/
 	avatar_path
 	username
 	first_name
 	last_name
 	level (hua 1000 xp = 1lvl)
 	win_rate
-	trophies_rate {
+	trophies_rate
+	friends {
 	online friends
 	offline friends
 	}
-	games 
+	games []
 	achievement_per_user
 	item_per_user
 
+leaderboard : http://localhost:2500/players/leaderboard/
+	list of players sorted by xp
 
 chat
 	dms with friends sorted by date of the msg desc
 	[avatar, username, messages]
 	invite to play a game
 
+settings
 
 shop
 	items
@@ -32,9 +36,4 @@ notifications
 	firendships requests
 	game reauests 
 
-leaderboard
-	list of players sorted by xp
 
-settings
-	post : first_name last_name password
-	get : all (pasword)
