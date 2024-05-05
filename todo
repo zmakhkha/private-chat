@@ -28,11 +28,12 @@ shop
 	[type, avatar, title, prix] : http://localhost:2500/shop/
 	post : buy[] : "item_id": "your_item_id" in the request body
 
-chat
+notifications
+	firendships requests : http://localhost:2500/friends/
+	'from_user': ['1'], 'to_user': ['4'], 'status': ['P']
+	game requests
+
+chat : waiting daw daw : 15/05 ;)
 	dms with friends sorted by date of the msg desc
 	[avatar, username, messages]
 	invite to play a game
-
-notifications
-	firendships requests
-	game requests 

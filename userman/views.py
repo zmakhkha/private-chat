@@ -27,15 +27,6 @@ from rest_framework import status
 from .models import Player
 from .serializers import PlayerSerializer, ItemSerializer
 
-# PUT NOT WORKING
-# class PlayerSettingAPIView(APIView):
-#     permission_classes = [IsAuthenticated]
-#     def put(self, request):
-#         player = request.user
-#         serialized_player = SettingsSerializer(player, data = request.data)
-#         serialized_player.is_valid(raise_exception=True)
-#         serialized_player.save()
-#         return Response(serialized_player.data)
 
 class PlayerSearchAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly] 
@@ -194,3 +185,60 @@ class PlayerViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+
+class FriendshipAPIView(APIView):
+    queryset = FriendshipRequest.objects.all()
+    serializer_class = FriendshipRequestSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        sent = FriendshipRequest.objects.filter(from_user=user)
+        recieved = FriendshipRequest.objects.filter(from_user=user)
+        serialized_sent = FriendshipRequestSerializer(sent, many=True)
+        serialized_recieved = FriendshipRequestSerializer(recieved, many=True)
+        data = {
+            'sent' : serialized_sent.data,
+            'recieved' : serialized_recieved.data,
+        }
+        return Response(data, status = 200)
+
+    # def post(self, request):
+    #     to_user_id = request.data.get('user_id')
+    #     if not to_user_id:
+    #         return Response({'message': 'No user_id specified'}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     try:
+    #         to_user = Player.objects.get(id=to_user_id)
+    #     except Player.DoesNotExist:
+    #         return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    #     from_user = request.user
+    #     FriendshipRequest.objects.create(from_user=from_user, to_user=to_user)
+    #     return Response({'message': 'Friendship request sent successfully'}, status=status.HTTP_201_CREATED)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save(from_user=request.user)
+            return Response({'message': 'Friendship request sent successfully'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        user = request.user
+        to_user_id = request.data.get('user_id')
+
+        if not to_user_id:
+            return Response({'message': 'No user_id specified'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            friendship_request = FriendshipRequest.objects.get(from_user=user, to_user__id=to_user_id)
+        except FriendshipRequest.DoesNotExist:
+            return Response({'message': 'Friendship request not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.serializer_class(instance=friendship_request, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({'message': 'Friendship request updated successfully'}, status=status.HTTP_200_OK)
